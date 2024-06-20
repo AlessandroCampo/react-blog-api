@@ -5,22 +5,43 @@ import './post.css';
 import { formatTimestamp } from "../../utils";
 import CustomizedMenus from "../../Dropdown";
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
+import axios from 'axios';
 
 
 export default ({ user, post, setPostList }) => {
 
     const [editing, setEditing] = useState(false);
     const newContent = useRef('');
+    const apiUrl = import.meta.env.VITE_API_URL;
 
+    console.log(user.id, post.userId)
 
+    const editPost = async () => {
 
-    const editPost = () => {
-        setPostList(currList => currList.map(p => {
-            if (p.id === post.id) {
-                return { ...p, content: newContent.current.value }
+        const token = localStorage.getItem('authTokenReact');
+        if (!token) return
+        try {
+            const headers = {
+                Authorization: `Bearer ${token}`
+            };
+            const data = {
+                content: newContent.current.value
             }
-            return { ...p }
-        }));
+            const response = await axios.put(`${apiUrl}posts/${post.slug}`, data, { headers });
+            if (response) {
+                console.log(response);
+                setPostList(currList => currList.map(p => {
+                    if (p.id === post.id) {
+                        return { ...p, content: newContent.current.value }
+                    }
+                    return { ...p }
+                }));
+            }
+        } catch (err) {
+            console.error(err);
+        }
+
+
         setEditing(false);
     }
 
@@ -44,7 +65,10 @@ export default ({ user, post, setPostList }) => {
                         </span>
                     </div>
                 </div>
-                <CustomizedMenus setPostList={setPostList} setEditing={setEditing} post={post} />
+                {
+                    post.userId === user.id && <CustomizedMenus setPostList={setPostList} setEditing={setEditing} post={post} />
+                }
+
             </div>
             <div className="px-6">
 

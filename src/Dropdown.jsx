@@ -6,6 +6,8 @@ import MenuItem from '@mui/material/MenuItem';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import Dialogue from './Dialogue.jsx';
+import axios from 'axios';
 
 
 
@@ -52,17 +54,37 @@ const StyledMenu = styled((props) => (
 
 export default function CustomizedMenus({ setPostList, setEditing, post }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [openDeleteDialogue, setopenDeleteDialogue] = React.useState(false);
     const open = Boolean(anchorEl);
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
+
     const handleClose = () => {
         setAnchorEl(null);
     };
 
-    const deletePost = () => {
-        setPostList(currList => currList.filter(p => p.id !== post.id));
-        handleClose();
+    const deletePost = async () => {
+        const token = localStorage.getItem('authTokenReact');
+        if (!token) return
+        try {
+            const headers = {
+                Authorization: `Bearer ${token}`
+            };
+            const response = await axios.delete(`${apiUrl}posts/${post.slug}`, { headers })
+            if (response) {
+                console.log(response);
+                setPostList(oldList => (oldList.filter(p => p.id !== post.id)))
+            }
+        } catch (err) {
+            console.error(err);
+        }
+
+        setopenDeleteDialogue(false);
     }
 
     const allowEdit = () => {
@@ -72,6 +94,16 @@ export default function CustomizedMenus({ setPostList, setEditing, post }) {
 
     return (
         <div>
+            {/* delete dialogue */}
+            <Dialogue
+                open={openDeleteDialogue}
+                title={'Are you sure you want to delete your post?'}
+                description={"If you delte this post, you won't be able to recover it"}
+                onCancel={() => { setopenDeleteDialogue(false) }}
+                onConfirm={async () => { await deletePost() }}
+                cancelLabel={'No, Keep Post'}
+                confirmLabel={'Yes, Delete Post'}
+            />
             <Button
                 id="demo-customized-button"
                 aria-controls={open ? 'demo-customized-menu' : undefined}
@@ -100,7 +132,7 @@ export default function CustomizedMenus({ setPostList, setEditing, post }) {
                     <EditIcon />
                     Edit
                 </MenuItem>
-                <MenuItem onClick={deletePost} disableRipple>
+                <MenuItem onClick={() => { setopenDeleteDialogue(true), handleClose() }} disableRipple>
                     <DeleteIcon />
                     Delete
                 </MenuItem>
