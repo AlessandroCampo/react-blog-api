@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CreatePost from "./components/PostComponents/CreatePost"
 import Post from "./components/PostComponents/Post";
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,6 +14,11 @@ const app = () => {
 
   const [postList, setPostList] = useState([]);
   const [user, setUser] = useState(undefined);
+  const [lastPage, setLastPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(2);
+
+  const postContainer = useRef(null);
+
 
   let authToken = '';
   const fetchToken = async () => {
@@ -24,7 +29,7 @@ const app = () => {
       }
       const { data } = await axios.post(`${apiUrl}users/login`, userData);
       if (data) {
-        console.log(data);
+
         setUser(data.user);
         authToken = data.token;
         localStorage.setItem('authTokenReact', data.token)
@@ -42,21 +47,22 @@ const app = () => {
 
 
 
-  const fetchPosts = async (token) => {
-    console.log('fetching', token)
-    if (!token) return
+  const fetchPosts = async (token, page = 1) => {
+    console.log('calls counter')
+    if (!token || page > totalPages) return
+
     try {
 
       const headers = {
         Authorization: `Bearer ${token}`
       };
 
-      const { data } = await axios.get(`${apiUrl}posts`, { headers });
-
+      const { data } = await axios.get(`${apiUrl}posts?page=${page}`, { headers });
+      (data)
       if (data) {
-        setPostList([...data.allPosts]);
-        console.log(data.allPosts);
-
+        setPostList(oldList => [...data.allPosts]);
+        setTotalPages(data.totalPages)
+        console.log(data)
       }
     } catch (err) {
       console.error(err);
@@ -68,6 +74,37 @@ const app = () => {
     loginThenFetchPosts();
   }, [])
 
+
+
+  useEffect(() => {
+    const handleScroll = async () => {
+      if (postContainer.current) {
+        const scrollTop = document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const containerHeight = postContainer.current.offsetHeight;
+        const containerTop = postContainer.current.offsetTop;
+        const bottomOfViewport = scrollTop + windowHeight;
+        const triggerPoint = containerTop + containerHeight * 0.9;
+
+        if (bottomOfViewport >= triggerPoint) {
+          console.log('triggered')
+          const token = localStorage.getItem('authTokenReact');
+          setLastPage(prevPage => {
+            const nextPage = prevPage + 1;
+            fetchPosts(token, nextPage);
+            return nextPage;
+          })
+          return
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [postList]);
 
   const notifyError = (errorText) => {
     toast.error(errorText)
@@ -84,7 +121,7 @@ const app = () => {
         hideProgressBar
       />
 
-      <div className="home-container">
+      <div className="home-container overflow-auto">
         <CreatePost
           user={user}
           setPostList={setPostList}
@@ -93,7 +130,7 @@ const app = () => {
           onPostCreate={(token) => { fetchPosts(token) }}
           token={authToken}
         />
-        <div className="posts-container">
+        <div className="posts-container" ref={postContainer}>
           {
             postList.map((p, i) => {
               return <Post
@@ -105,7 +142,9 @@ const app = () => {
 
               />
             })
+
           }
+
         </div>
 
       </div>

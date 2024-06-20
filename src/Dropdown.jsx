@@ -77,7 +77,7 @@ export default function CustomizedMenus({ setPostList, setEditing, post }) {
             };
             const response = await axios.delete(`${apiUrl}posts/${post.slug}`, { headers })
             if (response) {
-                console.log(response);
+
                 setPostList(oldList => (oldList.filter(p => p.id !== post.id)))
             }
         } catch (err) {

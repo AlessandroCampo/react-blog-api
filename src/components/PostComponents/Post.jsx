@@ -14,8 +14,6 @@ export default ({ user, post, setPostList }) => {
     const newContent = useRef('');
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    console.log(user.id, post.userId)
-
     const editPost = async () => {
 
         const token = localStorage.getItem('authTokenReact');
@@ -29,7 +27,7 @@ export default ({ user, post, setPostList }) => {
             }
             const response = await axios.put(`${apiUrl}posts/${post.slug}`, data, { headers });
             if (response) {
-                console.log(response);
+
                 setPostList(currList => currList.map(p => {
                     if (p.id === post.id) {
                         return { ...p, content: newContent.current.value }
@@ -52,13 +50,13 @@ export default ({ user, post, setPostList }) => {
                 <div className="upper-left flex gap-3">
                     <Avatar
                         sx={{ bgcolor: '#DAA520', color: 'gray', width: 48, height: 48 }}
-                        alt={user?.username}
+                        alt={post?.user?.username}
                         src={post.user?.avatar || ''}
 
                     />
                     <div className="authors-info flex flex-col text-sm">
                         <span className="font-bold">
-                            {user?.username}
+                            {post?.user?.username}
                         </span>
                         <span>
                             {formatTimestamp(post?.createdAt)}

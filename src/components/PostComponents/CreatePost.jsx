@@ -27,7 +27,7 @@ export default ({ user, setPostList, notifyError, onPostCreate, notifySuccess })
     };
 
     const updatePostContent = (e) => {
-        console.log(e.target.value);
+
         setPostContent(e.target.value);
     }
 
@@ -90,7 +90,7 @@ export default ({ user, setPostList, notifyError, onPostCreate, notifySuccess })
         try {
             const response = await axios.post(`${apiUrl}posts`, formData, { headers });
             if (response.data) {
-                console.log(response.data);
+
             }
         } catch (err) {
             console.error(err);
@@ -112,7 +112,7 @@ export default ({ user, setPostList, notifyError, onPostCreate, notifySuccess })
                 <Avatar
                     sx={{ bgcolor: '#DAA520', color: 'gray', width: 48, height: 48 }}
                     alt={user?.username}
-                    src="/static/images/avatar/1.jpg"
+                    src={user?.profilePic || ''}
 
                 />
                 <textarea
