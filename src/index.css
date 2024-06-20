@@ -27,5 +27,5 @@ body {
 }
 
 .posts-container {
-    @apply flex flex-col gap-3 mt-24
+    @apply flex flex-col gap-12 mt-24
 }

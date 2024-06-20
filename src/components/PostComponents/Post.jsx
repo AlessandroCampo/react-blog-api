@@ -32,7 +32,7 @@ export default ({ user, post, setPostList }) => {
                     <Avatar
                         sx={{ bgcolor: '#DAA520', color: 'gray', width: 48, height: 48 }}
                         alt={user?.username}
-                        src="/static/images/avatar/1.jpg"
+                        src={post.user?.avatar || ''}
 
                     />
                     <div className="authors-info flex flex-col text-sm">

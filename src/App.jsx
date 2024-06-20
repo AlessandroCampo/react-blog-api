@@ -27,6 +27,7 @@ const app = () => {
         console.log(data);
         setUser(data.user);
         authToken = data.token;
+        localStorage.setItem('authTokenReact', data.token)
         return data.token
       }
     } catch (err) {
@@ -42,6 +43,7 @@ const app = () => {
 
 
   const fetchPosts = async (token) => {
+    console.log('fetching', token)
     if (!token) return
     try {
 
@@ -53,6 +55,7 @@ const app = () => {
 
       if (data) {
         setPostList([...data.allPosts]);
+        console.log(data.allPosts);
 
       }
     } catch (err) {
@@ -70,6 +73,10 @@ const app = () => {
     toast.error(errorText)
   }
 
+  const notifySuccess = (text) => {
+    toast.success(text)
+  }
+
   return (
     <>
       <ToastContainer
@@ -82,6 +89,9 @@ const app = () => {
           user={user}
           setPostList={setPostList}
           notifyError={notifyError}
+          notifySuccess={notifySuccess}
+          onPostCreate={(token) => { fetchPosts(token) }}
+          token={authToken}
         />
         <div className="posts-container">
           {
@@ -91,6 +101,7 @@ const app = () => {
                 key={p.id || `post-${i}`}
                 post={p}
                 setPostList={setPostList}
+
 
               />
             })
