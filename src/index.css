@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+button {
+    @apply bg-theme text-gray-800 px-6 py-1 rounded-xl cursor-pointer font-semibold hover:bg-theme-dark hover:scale-105
+}
+
+input, textarea {
+    @apply bg-transparent resize-none focus:ring-0 outline-none
+}
+
+textarea {
+    @apply p-2 rounded-lg
+}
+
+.icon-common {
+    @apply text-theme text-2xl cursor-pointer hover:text-theme-dark hover:scale-105
+}
+
+body {
+    @apply bg-[#121212]
+}
+
+.home-container {
+    @apply w-1/2 mx-auto flex justify-center py-12 flex-col items-center
+}
+
+.posts-container {
+    @apply flex flex-col gap-3 mt-24
+}

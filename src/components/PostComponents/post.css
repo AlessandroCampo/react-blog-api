@@ -1,0 +1,29 @@
+.wrapper {
+    @apply flex flex-col w-[350px] gap-6 bg-input py-6 rounded-xl min-h-[220px] justify-between text-gray-400
+}
+
+.wrapper .upper {
+    @apply flex items-start justify-between px-6 h-full
+}
+
+
+.wrapper .lower {
+    @apply flex justify-between px-6
+}
+
+.preview {
+    @apply w-full h-full object-cover
+}
+
+.icons-container {
+    @apply flex items-center gap-3
+}
+
+.iconandcounter {
+    @apply flex items-center gap-2
+}
+
+.counter {
+    font-size: 15px !important;
+    font-weight: bold;
+}
