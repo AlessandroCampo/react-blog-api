@@ -99,6 +99,7 @@ export default ({ user, setPostList, notifyError, onPostCreate, notifySuccess })
         }
         onPostCreate(token);
         setPostContent('');
+        setImagePreview('')
         setCreatingPost(false);
         notifySuccess('Your post has been succesfully created!')
     }
@@ -123,7 +124,7 @@ export default ({ user, setPostList, notifyError, onPostCreate, notifySuccess })
                 </textarea>
             </div>
             {
-                postMedia &&
+                postMedia && imagePreview &&
                 <figure
                     className="w-full h-[150px]"
                 >
