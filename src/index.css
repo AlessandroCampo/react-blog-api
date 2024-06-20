@@ -6,11 +6,11 @@ button {
     @apply bg-theme text-gray-800 px-6 py-1 rounded-xl cursor-pointer font-semibold hover:bg-theme-dark hover:scale-105
 }
 
-input, textarea {
+input, textarea, .textarea {
     @apply bg-transparent resize-none focus:ring-0 outline-none
 }
 
-textarea {
+textarea, .textarea {
     @apply p-2 rounded-lg
 }
 

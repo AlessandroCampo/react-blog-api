@@ -4,6 +4,8 @@ import { FaRegComment, FaRegHeart, FaRetweet } from "react-icons/fa";
 import './post.css';
 import { formatTimestamp } from "../../utils";
 import CustomizedMenus from "../../Dropdown";
+import { TextareaAutosize } from '@mui/base/TextareaAutosize';
+
 
 export default ({ user, post, setPostList }) => {
 
@@ -45,13 +47,18 @@ export default ({ user, post, setPostList }) => {
                 <CustomizedMenus setPostList={setPostList} setEditing={setEditing} post={post} />
             </div>
             <div className="px-6">
-                <textarea readOnly={!editing}
-                    className={`${editing ? 'cursor-text border-2 border-white' : 'cursor-default border-0'}`}
+
+
+                <TextareaAutosize
                     defaultValue={post?.content}
+                    readOnly={!editing}
                     ref={newContent}
+                    className={`${editing ? 'cursor-text border-2 border-white' : 'cursor-default border-0'} w-full max-h-[160px]`}
                 >
 
-                </textarea>
+                </TextareaAutosize>
+
+
 
             </div>
             {
